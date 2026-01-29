@@ -43,6 +43,60 @@ const CustomCursor = () => {
       updateCursor(e)
     }
 
+
+
+    // Magnetic effect for links and buttons using event delegation
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const link = target.closest('a, button, [data-cursor="magnetic"]') as HTMLElement
+
+      if (link) {
+        const rect = link.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+
+        gsap.to(cursor, {
+          scale: 1.5,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+
+        gsap.to(follower, {
+          x: centerX,
+          y: centerY,
+          scale: 2,
+          opacity: 0.2,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+      }
+    }
+
+    const handleMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const link = target.closest('a, button, [data-cursor="magnetic"]')
+
+      if (link) {
+        gsap.to(cursor, {
+          scale: 1,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+
+        gsap.to(follower, {
+          scale: 1,
+          opacity: 0.3,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+      }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseover', handleMouseOver)
+    document.addEventListener('mouseout', handleMouseOut)
+
+    // Simple hover effect for elements that are just hovered but not magnetic (optional, kept simple)
     const handleMouseEnter = () => {
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.3 })
       gsap.to(follower, { scale: 1, opacity: 0.3, duration: 0.3 })
@@ -53,63 +107,15 @@ const CustomCursor = () => {
       gsap.to(follower, { scale: 0, opacity: 0, duration: 0.3 })
     }
 
-    // Magnetic effect for links and buttons
-    const handleLinkEnter = (e: MouseEvent) => {
-      const target = e.currentTarget as HTMLElement
-      const rect = target.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-
-      gsap.to(cursor, {
-        scale: 1.5,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-
-      gsap.to(follower, {
-        x: centerX,
-        y: centerY,
-        scale: 2,
-        opacity: 0.2,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-    }
-
-    const handleLinkLeave = () => {
-      gsap.to(cursor, {
-        scale: 1,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-
-      gsap.to(follower, {
-        scale: 1,
-        opacity: 0.3,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseenter', handleMouseEnter, true)
     document.addEventListener('mouseleave', handleMouseLeave, true)
 
-    // Add magnetic effect to all links and buttons
-    const links = document.querySelectorAll('a, button, [data-cursor="magnetic"]')
-    links.forEach((link) => {
-      link.addEventListener('mouseenter', handleLinkEnter as EventListener)
-      link.addEventListener('mouseleave', handleLinkLeave)
-    })
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseover', handleMouseOver)
+      document.removeEventListener('mouseout', handleMouseOut)
       document.removeEventListener('mouseenter', handleMouseEnter, true)
       document.removeEventListener('mouseleave', handleMouseLeave, true)
-      links.forEach((link) => {
-        link.removeEventListener('mouseenter', handleLinkEnter as EventListener)
-        link.removeEventListener('mouseleave', handleLinkLeave)
-      })
     }
   }, [])
 

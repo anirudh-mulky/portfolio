@@ -6,100 +6,116 @@ import './About.css'
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title reveal
-      gsap.from(titleRef.current, {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: 'top 80%',
-          end: 'top 50%',
-          toggleActions: 'play none none reverse',
-        },
-      })
+      // Artistic Title Reveal
+      const chars = titleRef.current?.querySelectorAll('.char')
+      if (chars) {
+        gsap.fromTo(chars,
+          { y: 100, opacity: 0, rotateX: -90 },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            stagger: 0.05,
+            duration: 1.5,
+            ease: 'expo.out',
+            scrollTrigger: {
+              trigger: titleRef.current,
+              start: 'top 80%',
+            }
+          }
+        )
+      }
 
-      // Content stagger
-      const contentElements = contentRef.current?.querySelectorAll('.about-text')
-      if (contentElements) {
-        gsap.from(contentElements, {
-          y: 60,
-          opacity: 0,
-          duration: 1,
-          stagger: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none reverse',
-          },
+      // Floating Cards Parallax
+      const cards = cardsRef.current?.querySelectorAll('.creative-card')
+      if (cards) {
+        cards.forEach((card, i) => {
+          gsap.fromTo(card,
+            { y: 100, opacity: 0, rotate: i % 2 === 0 ? -5 : 5 },
+            {
+              y: 0,
+              opacity: 1,
+              rotate: i % 2 === 0 ? -2 : 2,
+              duration: 1.2,
+              delay: i * 0.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 60%',
+              }
+            }
+          )
+
+          // Continuous gentle float
+          gsap.to(card, {
+            y: -15,
+            duration: 2 + i,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: 1 + i * 0.5
+          })
         })
       }
 
-      // Image parallax
-      if (imageRef.current) {
-        gsap.to(imageRef.current, {
-          y: -50,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        })
-      }
     }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
+  // Helper to split text for animation
+  const splitText = (text: string) => {
+    return text.split('').map((char, i) => (
+      <span key={i} className="char" style={{ display: 'inline-block' }}>
+        {char === ' ' ? '\u00A0' : char}
+      </span>
+    ))
+  }
+
   return (
-    <section ref={sectionRef} className="about" id="about">
-      <div className="about-container">
-        <h2 ref={titleRef} className="about-title">
-          Who I Am
-        </h2>
-        <div className="about-content">
-          <div ref={contentRef} className="about-text-wrapper">
-            <p className="about-text">
-              I'm a creative frontend engineer specializing in premium digital experiences.
-              My work sits at the intersection of code, motion, and design—where every
-              interaction feels intentional and every animation tells a story.
-            </p>
-            <p className="about-text">
-              With a focus on restraint and polish, I build websites that don't just
-              function—they resonate. Each project is an opportunity to push boundaries
-              while maintaining the elegance that defines premium work.
-            </p>
-            <p className="about-text">
-              Currently available for select freelance projects and collaborations
-              with forward-thinking brands and agencies.
-            </p>
-            <div className="about-stats">
-              <div className="stat-item">
-                <div className="stat-number">50+</div>
-                <div className="stat-label">Projects Delivered</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">5+</div>
-                <div className="stat-label">Years Experience</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Client Satisfaction</div>
-              </div>
+    <section ref={sectionRef} className="about-creative" id="about">
+      <div className="creative-background">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+
+      <div className="about-container-creative">
+        <div className="about-header-creative">
+          <span className="subtitle-creative">The Philosophy</span>
+          <h2 ref={titleRef} className="title-creative">
+            {splitText("Digital Alchemy")}
+          </h2>
+          <p className="manifesto-text">
+            We don't just build websites. We transmute <span className="highlight-serif">ideas</span> into <span className="highlight-serif">reality</span>.
+            Blurring the line between functional interface and digital art.
+          </p>
+        </div>
+
+        <div ref={cardsRef} className="cards-wrapper">
+          <div className="creative-card card-visual">
+            <div className="card-inner">
+              <h3>Vision</h3>
+              <p>Seeing beyond the grid.</p>
+              <div className="card-shape shape-circle"></div>
             </div>
           </div>
-          <div ref={imageRef} className="about-image">
-            <div className="about-image-placeholder">
-              <div className="image-gradient"></div>
-            </div>
+
+          <div className="creative-card card-text">
+            <p>
+              True creativity requires the courage to let go of certainties.
+              We embrace the chaos of the creative process to find the
+              <span className="italic-accent"> sublime order</span> hidden within.
+            </p>
+          </div>
+
+          <div className="creative-card card-stat">
+            <span className="big-number">∞</span>
+            <span className="label">Possibilities</span>
           </div>
         </div>
       </div>

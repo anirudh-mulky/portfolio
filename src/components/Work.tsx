@@ -74,33 +74,39 @@ const Work = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Title reveal
-      gsap.from(titleRef.current, {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
-        },
-      })
+      gsap.fromTo(titleRef.current,
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
 
       // Cards stagger animation
       const cards = cardsRef.current?.querySelectorAll('.work-card')
       if (cards) {
-        gsap.from(cards, {
-          y: 100,
-          opacity: 0,
-          duration: 1.2,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none reverse',
-          },
-        })
+        gsap.fromTo(cards,
+          { y: 100, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
       }
     }, sectionRef)
 
