@@ -6,8 +6,27 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: var(--bg-primary);
+  /* Revert to var */
+  perspective: none;
 }
 
+/* --- 3D Carousel Container --- */
+.hero-carousel-3d {
+  position: relative;
+  width: 0;
+  height: 0;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Tilt the entire ring slightly for better view */
+  transform: rotateX(-5deg);
+}
+
+/* Background */
 .hero-background {
   position: absolute;
   top: 0;
@@ -16,7 +35,6 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  background: var(--bg-primary);
 }
 
 .hero-background-gradient {
@@ -30,159 +48,223 @@
   z-index: 1;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  padding: 0 2rem;
-  max-width: 1200px;
-  pointer-events: none;
-  opacity: 1;
-  visibility: visible;
-}
-
-.hero-content * {
-  pointer-events: auto;
-}
-
-.hero-title {
-  font-size: clamp(4rem, 12vw, 10rem);
-  font-weight: 300;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  margin-bottom: 2rem;
-  overflow: hidden;
-  color: var(--text-primary);
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.title-line {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  visibility: visible !important;
-}
-
-.hero-subtitle {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateY(0) !important;
-}
-
-.hero-cta {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateY(0) !important;
-}
-
-.title-line {
-  display: block;
-}
-
-.hero-subtitle {
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 300;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 4rem;
-  line-height: 1.6;
-}
-
-.hero-cta {
+/* --- 3D Angled Stage --- */
+.hero-3d-stage {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 150%;
+  /* Make broader to cover edges when rotated */
+  left: -25%;
+  height: 600px;
   display: flex;
+  align-items: center;
   justify-content: center;
+
+  /* THE DRAMATIC ANGLED POV */
+  perspective: 3000px;
+  transform-style: preserve-3d;
+  z-index: 5;
+  /* Optional: Fade edges */
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-.cta-button {
-  position: relative;
-  padding: 1.2rem 3.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  text-decoration: none;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.hero-carousel-track {
+  display: flex;
+  gap: 4rem;
+  /* More breathing room */
+  width: max-content;
+  will-change: transform;
+  padding: 0 10rem;
+
+  /* Rotate the entire track in 3D space - increased angle */
+  transform: rotateY(-25deg) rotateX(10deg) translateX(5%);
+}
+
+/* --- Hero Card --- */
+.hero-card {
+  position: absolute;
+  top: -225px;
+  /* Half height */
+  left: -160px;
+  /* Half width */
+  width: 320px;
+  height: 450px;
+  border-radius: 24px;
   overflow: hidden;
-  border-radius: 100px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  background: #111;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+  /* Transforms will be handled by JS */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  /* Hide if they spin around fully, though we are in cylinder */
+
+  background: rgba(17, 17, 17, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, border 0.3s ease;
 }
 
-.cta-button::before {
-  content: '';
+.hero-card:hover {
+  box-shadow: 0 40px 80px rgba(var(--accent-rgb, 255, 85, 0), 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  /* Note: We don't scale on hover here easily because JS controls transform. 
+       We rely on the 'slow down' interaction for focus. */
+}
+
+.card-gradient {
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-  transition: left 0.5s;
+  inset: 0;
+  opacity: 0.6;
+  transition: opacity 0.5s ease;
 }
 
-.cta-button:hover::before {
-  left: 100%;
+.hero-card:hover .card-gradient {
+  opacity: 1;
 }
 
-.cta-button:hover {
-  border-color: var(--accent);
-  background: rgba(235, 94, 40, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px -10px var(--accent-glow);
-}
-
-.hero-scroll-indicator {
+.card-glass {
   position: absolute;
-  bottom: 2rem;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.0) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .hero-card {
+    width: 220px;
+    height: 300px;
+  }
+
+  .hero-3d-stage {
+    perspective: 1500px;
+    /* Less dramatic on mobile to ensure visibility */
+    transform: translateY(-50%) rotateY(-10deg);
+  }
+
+  .hero-carousel-track {
+    transform: rotateY(-10deg) translateX(10%);
+    gap: 2rem;
+  }
+}
+
+/* --- Background Layer Text --- */
+.hero-bg-text {
+  position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
+  transform: translate(-50%, -50%);
+  font-size: clamp(8rem, 25vw, 30rem);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
+  /* Subtle outline */
+  z-index: 1;
+  /* Behind 3D (z=10) */
+  pointer-events: none;
+  letter-spacing: -0.05em;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+
+/* --- Foreground Overlay Text --- */
+.hero-overlay-text {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  /* Above 3D */
+  pointer-events: none;
+  padding: 3rem;
+}
+
+.hero-n-text {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  opacity: 0.7;
+  gap: 0.5rem;
 }
 
-.scroll-text {
-  font-size: 0.75rem;
+.top-left {
+  top: 3rem;
+  left: 3rem;
+  text-align: left;
+}
+
+.bottom-right {
+  bottom: 3rem;
+  right: 3rem;
+  text-align: right;
+}
+
+.cursive-font {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.label-font {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.scroll-line {
-  width: 1px;
-  height: 80px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
+.title-font {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 1;
+  color: #fff;
 }
 
-@keyframes scrollPulse {
 
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 1;
-  }
+/* --- Noise Texture --- */
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
 }
 
+/* --- Responsive --- */
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: clamp(3rem, 15vw, 6rem);
+  .hero-bg-text {
+    font-size: 20vw;
   }
 
-  .hero-subtitle {
-    font-size: 1rem;
-    margin-bottom: 3rem;
+  .hero-overlay-text {
+    padding: 1.5rem;
   }
 
-  .cta-button {
-    padding: 1rem 2rem;
-    font-size: 0.9rem;
+  .top-left {
+    top: 1.5rem;
+    left: 1.5rem;
+  }
+
+  .bottom-right {
+    bottom: 6rem;
+    right: 1.5rem;
+  }
+
+  /* Pushed up for mobile UI bars */
+
+  .title-font {
+    font-size: 2rem;
+  }
+
+  .cursive-font {
+    font-size: 1.5rem;
   }
 }

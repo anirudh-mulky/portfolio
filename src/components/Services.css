@@ -2,98 +2,360 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  padding: 6rem 2rem;
-  background: var(--bg-primary);
+  padding: 10rem 2rem;
+  background: #030303;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
+
+/* --- Background Creativity --- */
+
+.services-bg-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.services-bg-orbs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.orb-1 {
+  top: 10%;
+  /* right: 10%; */
+  /* Removed conflicting property */
+  left: 80%;
+  /* Replaced right with left */
+  width: 300px;
+  height: 300px;
+  background: var(--accent);
+  animation: floatOrb 10s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  bottom: 10%;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  background: purple;
+  animation: floatOrb 12s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(30px, 50px);
+  }
+}
+
+/* --- Layout & Typography --- */
 
 .services-container {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .services-title {
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: clamp(3rem, 7vw, 6rem);
   font-weight: 300;
-  letter-spacing: -0.02em;
-  margin-bottom: 6rem;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 8rem;
+  text-align: center;
+  background: linear-gradient(to bottom, #fff, #666);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .services-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4rem;
+  padding: 2rem;
 }
+
+/* --- Card Creative Design --- */
 
 .service-item {
   position: relative;
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 3rem;
-  padding: 3rem 0;
-  border-bottom: 1px solid var(--glass-border);
+  background: transparent;
+  border-radius: 20px;
+  /* Match inner radius */
+  isolation: isolate;
   cursor: pointer;
-  transition: padding 0.3s;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: visible;
+  /* Allow shadow to show */
 }
 
-.service-item:hover {
-  padding-left: 2rem;
-  background: linear-gradient(90deg, var(--glass-bg), transparent);
-}
-
-.service-number {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 300;
-  color: var(--text-secondary);
-  transition: transform 0.3s;
-  line-height: 1;
-}
-
-.service-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.service-title {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.service-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  font-weight: 300;
-}
-
-.service-line {
+/* New Wrapper for Lines (Clipped) */
+.service-line-wrapper {
   position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 1. Focus Effect (Peer Fade/Blur) */
+/* Modern fix: Only blur if an item is ACTUALLY hovered */
+.services-list:has(.service-item:hover) .service-item:not(:hover) {
+  opacity: 0.2;
+  /* Fade out more for drama */
+  filter: blur(2px) grayscale(100%);
+  /* Reduced blur, added grayscale */
+  transform: scale(0.98);
+}
+
+/* Active Item State */
+.service-item:hover {
+  opacity: 1;
+  filter: blur(0) grayscale(0%);
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 0 60px -10px rgba(var(--accent-rgb, 100, 100, 255), 0.3);
+  /* Softer, premium glow */
+}
+
+/* Random Offsets (preserve) */
+.service-item:nth-child(even) {
+  transform: translateY(60px);
+}
+
+/* Maintain offset logic during hover */
+.services-list:has(.service-item:hover) .service-item:nth-child(even):not(:hover) {
+  transform: translateY(60px) scale(0.98);
+}
+
+.service-item:hover:nth-child(even) {
+  transform: translateY(60px) scale(1.02);
+}
+
+/* 2. Traveling Line Animation ("Snake Border") */
+.service-line-wrapper span {
+  position: absolute;
+  display: block;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  /* Faster initial appearance */
+}
+
+.service-item:hover .service-line-wrapper span {
+  opacity: 1;
+}
+
+/* Top Line */
+.line-top {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  /* Thinner for premium feel */
+  background: linear-gradient(90deg, transparent, var(--accent));
+  animation: snake-top 1.5s linear infinite;
+  /* Increased play speed slightly */
+  animation-delay: 0s;
+}
+
+/* Right Line */
+.line-right {
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, var(--accent));
+  animation: snake-right 1.5s linear infinite;
+  animation-delay: 0.375s;
+  /* 1.5s / 4 */
+}
+
+/* Bottom Line */
+.line-bottom {
   bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
+  background: linear-gradient(270deg, transparent, var(--accent));
+  animation: snake-bottom 1.5s linear infinite;
+  animation-delay: 0.75s;
 }
 
-@media (max-width: 768px) {
-  .services {
-    padding: 6rem 2rem;
+/* Left Line */
+.line-left {
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, var(--accent));
+  animation: snake-left 1.5s linear infinite;
+  animation-delay: 1.125s;
+}
+
+/* Keyframes for the "Travel" */
+@keyframes snake-top {
+  0% {
+    left: -100%;
   }
 
-  .service-item {
-    grid-template-columns: 60px 1fr;
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes snake-right {
+  0% {
+    top: -100%;
+  }
+
+  50%,
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes snake-bottom {
+  0% {
+    left: 100%;
+  }
+
+  50%,
+  100% {
+    left: -100%;
+  }
+}
+
+@keyframes snake-left {
+  0% {
+    top: 100%;
+  }
+
+  50%,
+  100% {
+    top: -100%;
+  }
+}
+
+/* Card Inner Content */
+.service-card-inner {
+  background: rgba(20, 20, 20, 0.6);
+  /* Slightly more transparent */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 3rem;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s ease;
+}
+
+.service-item:hover .service-card-inner {
+  background: rgba(20, 20, 20, 0.9);
+  /* Darker when active */
+  border-color: transparent;
+  /* Let the beam show */
+}
+
+/* Content Styling */
+.service-header {
+  margin-bottom: 2rem;
+}
+
+.service-number {
+  font-family: 'Syne', sans-serif;
+  /* Assuming font availability or fallback */
+  font-size: 3rem;
+  font-weight: 700;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+  color: transparent;
+  transition: color 0.3s ease;
+}
+
+.service-item:hover .service-number {
+  color: var(--accent);
+  -webkit-text-stroke: 0px;
+}
+
+.service-title {
+  font-size: 2.2rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.service-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #888;
+  font-weight: 300;
+}
+
+@media (max-width: 900px) {
+  .services-list {
+    grid-template-columns: 1fr;
     gap: 2rem;
   }
 
-  .service-item:hover {
-    padding-left: 0.5rem;
+  .service-item:nth-child(even) {
+    transform: none;
+  }
+
+  .services-list:has(.service-item:hover) .service-item:not(:hover) {
+    transform: scale(0.98);
+    /* Simple shrink no translate */
+  }
+
+  /* Reset overrides */
+  .services-list .service-item:hover:nth-child(even),
+  .services-list:has(.service-item:hover) .service-item:nth-child(even):not(:hover) {
+    transform: none;
+    /* Just rely on scale */
+  }
+
+  .services-list .service-item:hover {
+    transform: scale(1.02);
+  }
+
+  .service-item:nth-child(3n) {
+    margin-left: 0;
+  }
+
+  .orb-1,
+  .orb-2 {
+    filter: blur(60px);
+    opacity: 0.2;
   }
 }

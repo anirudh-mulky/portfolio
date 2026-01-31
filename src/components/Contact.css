@@ -2,93 +2,237 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  padding: 6rem 2rem;
+  padding: 8rem 2rem;
+  background: #000;
   display: flex;
-  background: var(--bg-secondary);
   align-items: center;
   justify-content: center;
-}
-
-.contact-container {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.contact-title {
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  margin-bottom: 2rem;
-  line-height: 1.1;
-}
-
-.contact-text {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.8;
-  color: var(--text-secondary);
-  margin-bottom: 4rem;
-  font-weight: 300;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.contact-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem 4rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: var(--accent);
-  text-decoration: none;
-  border: none;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
   overflow: hidden;
 }
 
-.contact-button::before {
-  content: '';
+/* --- Background --- */
+.contact-bg-wrapper {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  /* Taller for parallax */
+  top: -10%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.contact-bg-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-  transition: left 0.5s;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  /* Slightly increased for texture visibility */
+  filter: grayscale(100%) contrast(1.1);
 }
 
-.contact-button:hover::before {
-  left: 100%;
+.contact-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 20%, #000 90%);
+  /* Stronger vignette */
+  z-index: 1;
 }
 
-.contact-button:hover {
-  box-shadow: 0 0 40px var(--accent-glow);
-  transform: translateY(-2px);
+/* Film Grain Noise */
+.contact-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 0.07;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-.contact-button svg {
-  transition: transform 0.3s;
+/* --- Content --- */
+.contact-container.text-center {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+  /* More breathing room */
 }
 
-.contact-button:hover svg {
-  transform: translate(5px, -5px);
+.contact-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 0.9;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  /* Lift text off noise */
+}
+
+.title-line {
+  display: block;
+  text-align: center;
+}
+
+.line-1 {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.line-2 {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(4rem, 10vw, 9rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: linear-gradient(to bottom, #ffffff, #999999);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.line-3 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-style: italic;
+  font-weight: 400;
+  color: #fff;
+  margin-top: -10px;
+  /* Overlap effect */
+  transform: rotate(-2deg);
+  /* Organic feel */
+  mix-blend-mode: overlay;
+  /* Creative blend */
+  opacity: 0.9;
+}
+
+.line-4 {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 700;
+  margin-top: 1rem;
+  text-transform: capitalize;
+  position: relative;
+}
+
+/* Underline Magic */
+.underline-wrapper {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.creative-underline {
+  position: absolute;
+  bottom: -45px;
+  /* Pushed lower for the swoop */
+  left: -10%;
+  width: 120%;
+  /* Wider to frame word */
+  height: 50px;
+  /* Taller viewBox */
+  overflow: visible;
+  pointer-events: none;
+}
+
+.contact-subtext {
+  font-size: 1.5rem;
+  color: #888;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+/* --- Premium Button --- */
+.premium-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 4rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  background: transparent;
+  border-radius: 50px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.btn-layer-1 {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.btn-layer-2 {
+  background: var(--accent);
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.premium-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(var(--accent-rgb, 100, 100, 255), 0.4);
+}
+
+.premium-btn:hover .btn-layer-2 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.premium-btn:hover .btn-layer-1 {
+  opacity: 0;
 }
 
 @media (max-width: 768px) {
   .contact {
-    padding: 6rem 2rem;
+    padding: 6rem 1.5rem;
   }
 
-  .contact-text {
-    margin-bottom: 3rem;
+  .contact-title {
+    font-size: 3rem;
   }
 
-  .contact-button {
-    padding: 1.2rem 3rem;
-    font-size: 0.9rem;
+  .creative-underline {
+    bottom: -10px;
+    height: 15px;
   }
 }

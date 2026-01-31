@@ -1,153 +1,148 @@
-import { useEffect, useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import HeroBackground from './HeroBackground'
 import './Hero.css'
 
+const CARD_Colors = [
+  'linear-gradient(135deg, #ff5500, #ff8800)',
+  'linear-gradient(135deg, #00ff88, #00cca3)',
+  'linear-gradient(135deg, #0099ff, #0055ff)',
+  'linear-gradient(135deg, #ff0055, #cc0033)',
+  'linear-gradient(135deg, #aa00ff, #5500ff)',
+  'linear-gradient(135deg, #ffffff, #aaaaaa)',
+]
+
 const Hero = () => {
   const heroRef = useRef<HTMLElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const subtitleRef = useRef<HTMLParagraphElement>(null)
-  const ctaRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const speedRef = useRef(0.2) // Base rotation speed
+  const progressRef = useRef(0) // Accumulates rotation
 
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      try {
-        const ctx = gsap.context(() => {
-          // Set initial states for animation
-          if (titleRef.current && titleRef.current.children.length > 0) {
-            const children = Array.from(titleRef.current.children) as HTMLElement[]
-            // Only animate if elements exist
-            if (children.length > 0) {
-              gsap.set(children, { y: 100, opacity: 0, clearProps: 'none' })
-              
-              // Animate in
-              gsap.to(children, {
-                y: 0,
-                opacity: 1,
-                duration: 1.2,
-                stagger: 0.1,
-                ease: 'power3.out',
-                delay: 0.3,
-              })
-            }
-          }
+    const cards = gsap.utils.toArray('.hero-card') as HTMLDivElement[]
+    const cardCount = cards.length
+    const radius = 1100 // Large radius for a "flatter" looking center
+    const theta = (2 * Math.PI) / cardCount
+    const thetaIndeg = theta * (180 / Math.PI)
 
-          // Subtitle animation
-          if (subtitleRef.current) {
-            gsap.set(subtitleRef.current, { y: 50, opacity: 0, clearProps: 'none' })
-            gsap.to(subtitleRef.current, {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: 'power3.out',
-              delay: 0.8,
-            })
-          }
+    const update = () => {
+      progressRef.current += speedRef.current * 0.05 // Increased speed slightly for visibility
 
-          // CTA animation
-          if (ctaRef.current) {
-            gsap.set(ctaRef.current, { y: 30, opacity: 0, clearProps: 'none' })
-            gsap.to(ctaRef.current, {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: 'power3.out',
-              delay: 1.2,
-            })
-          }
+      cards.forEach((card, i) => {
+        const angle = (theta * i) + progressRef.current
 
-          // Parallax effect on scroll
-          if (heroRef.current) {
-            gsap.to(heroRef.current, {
-              y: -100,
-              scrollTrigger: {
-                trigger: heroRef.current,
-                start: 'top top',
-                end: 'bottom top',
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            })
-          }
-        }, heroRef)
+        // Calculate 3D Cylinder Coords
+        const x = Math.sin(angle) * radius
+        const z = (Math.cos(angle) * radius) - radius
 
-        return () => ctx.revert()
-      } catch (error) {
-        console.error('GSAP animation error:', error)
-        // If GSAP fails, ensure content is visible
-        if (titleRef.current) {
-          const children = Array.from(titleRef.current.children) as HTMLElement[]
-          children.forEach(child => {
-            child.style.opacity = '1'
-            child.style.transform = 'translateY(0)'
-          })
-        }
-        if (subtitleRef.current) {
-          subtitleRef.current.style.opacity = '1'
-          subtitleRef.current.style.transform = 'translateY(0)'
-        }
-        if (ctaRef.current) {
-          ctaRef.current.style.opacity = '1'
-          ctaRef.current.style.transform = 'translateY(0)'
-        }
-      }
-    }, 200)
+        // Rotation: Cards face OUT from center
+        const rotY = angle * (180 / Math.PI)
 
-    return () => clearTimeout(timer)
+        // Apply Transform
+        // Normalize Z for opacity: range is roughly [-2*radius, 0]
+        const normalizedZ = (z + 2 * radius) / (2 * radius)
+
+        gsap.set(card, {
+          x: x,
+          z: z,
+          rotationY: rotY,
+          opacity: 0.1 + (0.9 * normalizedZ),
+          filter: `brightness(${0.3 + 0.7 * normalizedZ})`
+        })
+      })
+    }
+
+    gsap.ticker.add(update)
+
+    // Text Reveals (Creative Genius Mode)
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.5 })
+
+      // Reveal Top Title
+      tl.fromTo('.hero-title-complex.top',
+        { y: -100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' }
+      )
+        // Reveal Bottom Title
+        .fromTo('.hero-title-complex.bottom',
+          { y: 100, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' },
+          "-=1"
+        )
+        // Expand Glow
+        .fromTo('.hero-aura',
+          { scale: 0.5, opacity: 0 },
+          { scale: 1, opacity: 0.6, duration: 2, ease: 'power2.out' },
+          "-=1.2"
+        )
+    }, heroRef)
+
+    return () => {
+      gsap.ticker.remove(update)
+      ctx.revert()
+    }
   }, [])
+
+  // Interaction: Slow down on hover
+  const onEnter = () => gsap.to(speedRef, { current: 0.02, duration: 0.5 })
+  const onLeave = () => gsap.to(speedRef, { current: 0.2, duration: 0.5 })
+
+  // Duplicate color array to get enough cards
+  const cardsData = [...CARD_Colors, ...CARD_Colors, ...CARD_Colors].slice(0, 14)
 
   return (
     <section ref={heroRef} className="hero">
-      <div className="hero-background">
-        <div className="hero-background-gradient"></div>
+      <div className="hero-background" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Canvas
           camera={{ position: [0, 0, 5], fov: 75 }}
           gl={{ antialias: true, alpha: true }}
           dpr={[1, 2]}
           style={{ background: 'transparent' }}
           onCreated={(state) => {
-            // Ensure canvas doesn't block content
             state.gl.domElement.style.pointerEvents = 'none'
           }}
         >
-          <ambientLight intensity={0.8} />
-          <pointLight position={[10, 10, 10]} intensity={1.2} />
-          <pointLight position={[-10, -10, -10]} intensity={0.6} />
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} intensity={1} />
           <HeroBackground />
-          <OrbitControls 
-            enableZoom={false} 
-            enablePan={false} 
-            autoRotate 
-            autoRotateSpeed={0.3}
-            enableDamping={true}
-            dampingFactor={0.05}
-          />
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
         </Canvas>
       </div>
-      <div className="hero-content">
-        <h1 ref={titleRef} className="hero-title">
-          <span className="title-line">Creative</span>
-          <span className="title-line">Frontend</span>
-          <span className="title-line">Engineer</span>
-        </h1>
-        <p ref={subtitleRef} className="hero-subtitle">
-          Crafting premium digital experiences with motion, depth, and intention.
-          <br />
-          <span style={{ fontSize: '0.9em', opacity: 0.7 }}>Available for select projects worldwide.</span>
-        </p>
-        <div ref={ctaRef} className="hero-cta">
-          <a href="#work" className="cta-button" data-cursor="magnetic">
-            View Work
-          </a>
-        </div>
+
+      {/* Cool Element: Central Glowing Aura */}
+      <div className="hero-aura"></div>
+
+      {/* Top Center Typography */}
+      <div className="hero-title-complex top">
+        <h1 className="hero-big-text gradient-text">CREATIVE</h1>
+        <span className="hero-script-text">Vision</span>
       </div>
-      <div className="hero-scroll-indicator">
-        <div className="scroll-line"></div>
+
+      {/* 3D Scene Container */}
+      <div
+        className="hero-carousel-3d"
+        ref={containerRef}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+      >
+        {cardsData.map((grad, i) => (
+          <div key={i} className="hero-card">
+            <div className="card-gradient" style={{ background: grad }}></div>
+            <div className="card-glass"></div>
+          </div>
+        ))}
       </div>
+
+      {/* Bottom Center Typography */}
+      <div className="hero-title-complex bottom">
+        <span className="hero-script-text alt-pos">Craft</span>
+        <h1 className="hero-big-text gradient-text">ENGINEER</h1>
+      </div>
+
+      <div className="hero-noise"></div>
+
     </section>
   )
 }

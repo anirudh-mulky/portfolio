@@ -3,78 +3,54 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 function HeroBackground() {
-  const meshRef = useRef<THREE.Mesh>(null)
   const particlesRef = useRef<THREE.Points>(null)
 
-  // Create abstract geometry
-  const geometry = useMemo(() => {
-    return new THREE.IcosahedronGeometry(2.5, 15)
-  }, [])
-
-  // Create particle system
+  // Create particle system with square pixel aesthetic
   const particles = useMemo(() => {
-    const count = 1500
+    const count = 2000
     const positions = new Float32Array(count * 3)
     
     for (let i = 0; i < count * 3; i += 3) {
-      const radius = 3 + Math.random() * 2
-      const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(Math.random() * 2 - 1)
-      
-      positions[i] = radius * Math.sin(phi) * Math.cos(theta)
-      positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta)
-      positions[i + 2] = radius * Math.cos(phi)
+      // Create a large volume of particles
+      // Using a box distribution for a more "digital/matrix" field feel than a sphere
+      positions[i] = (Math.random() - 0.5) * 25
+      positions[i + 1] = (Math.random() - 0.5) * 25
+      positions[i + 2] = (Math.random() - 0.5) * 20 - 2 // Bias towards back
     }
     
     return positions
   }, [])
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.0008
-      meshRef.current.rotation.y += 0.0015
-      
-      // Subtle breathing animation
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 0.5) * 0.03
-      meshRef.current.scale.set(scale, scale, scale)
-    }
-
     if (particlesRef.current) {
-      particlesRef.current.rotation.x -= 0.0003
-      particlesRef.current.rotation.y += 0.0008
+      // Slow, subtle floating animation
+      particlesRef.current.rotation.x += 0.0001
+      particlesRef.current.rotation.y += 0.0002
+      
+      // Optional: bobbing motion
+      particlesRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.2
     }
   })
 
   return (
-    <>
-      <mesh ref={meshRef} geometry={geometry}>
-        <meshStandardMaterial
-          color="#2a2a2a"
-          wireframe
-          opacity={0.4}
-          transparent
-          emissive="#1a1a1a"
-          side={THREE.DoubleSide}
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particles.length / 3}
+          array={particles}
+          itemSize={3}
         />
-      </mesh>
-      <points ref={particlesRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={particles.length / 3}
-            array={particles}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.04}
-          color="#ffffff"
-          opacity={0.5}
-          transparent
-          sizeAttenuation={true}
-        />
-      </points>
-    </>
+      </bufferGeometry>
+      {/* Default points are squares. Size attenuation makes them smaller further away. */}
+      <pointsMaterial
+        size={0.12}
+        color="#888888"
+        transparent
+        opacity={0.6}
+        sizeAttenuation={true}
+      />
+    </points>
   )
 }
 
