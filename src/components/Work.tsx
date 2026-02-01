@@ -1,18 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useRef, useEffect } from 'react'
+import { Canvas } from '@react-three/fiber'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import ParticleBackground from './ParticleBackground'
 import './Work.css'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const projects = [
   {
     id: 1,
-    title: 'Premium Brand Experience',
-    category: 'E-commerce',
-    description: 'A luxury retail platform with immersive 3D product visualization and seamless checkout flow',
-    year: '2024',
+    title: 'VRXocial-Agency',
+    category: 'Digital Marketing',
+    description: 'A luxury digital marketing site with advanced motion and seamless flow',
+    year: '2025',
     tags: ['React', 'Three.js', 'GSAP', 'Stripe'],
-    image: 'project-1',
-    results: ['+40% Conv. Rate', '2s Load Time']
+    image: '/assets/uploaded_media_1769871654879.png',
+    link: 'https://vrxocial.in/'
   },
   {
     id: 2,
@@ -20,9 +24,9 @@ const projects = [
     category: 'Portfolio',
     description: 'Award-winning portfolio site with advanced motion design and interactive case studies',
     year: '2024',
-    tags: ['Next.js', 'Framer Motion', 'TypeScript'],
-    image: 'project-2',
-    results: ['Awwwards SOTD', '50k+ Visits']
+    tags: ['Next.js', 'Framer', 'TypeScript'],
+    image: null,
+    link: 'https://example.com'
   },
   {
     id: 3,
@@ -31,8 +35,8 @@ const projects = [
     description: 'Interactive product launch site with WebGL animations and scroll-triggered reveals',
     year: '2024',
     tags: ['WebGL', 'GSAP', 'React'],
-    image: 'project-3',
-    results: ['1M+ Impressions', 'Top #1 PH']
+    image: null,
+    link: 'https://example.com'
   },
   {
     id: 4,
@@ -41,8 +45,8 @@ const projects = [
     description: 'High-end fashion e-commerce with cinematic storytelling and AR try-on features',
     year: '2023',
     tags: ['Vue.js', 'WebXR', 'Shopify'],
-    image: 'project-4',
-    results: ['+85% Engagement', 'AR Integrated']
+    image: null,
+    link: 'https://example.com'
   },
   {
     id: 5,
@@ -51,8 +55,8 @@ const projects = [
     description: 'Complete UI/UX overhaul of enterprise dashboard with real-time data visualization',
     year: '2023',
     tags: ['React', 'D3.js', 'Tailwind'],
-    image: 'project-5',
-    results: ['-30% Churn', 'Team Favorite']
+    image: null,
+    link: 'https://example.com'
   },
   {
     id: 6,
@@ -61,53 +65,52 @@ const projects = [
     description: 'Immersive festival experience with interactive lineups and ticket purchasing',
     year: '2023',
     tags: ['Next.js', 'GSAP', 'Stripe'],
-    image: 'project-6',
-    results: ['Sold Out', 'Best UX Award']
+    image: null,
+    link: 'https://example.com'
   },
 ]
 
 const Work = () => {
   const sectionRef = useRef<HTMLElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const cardsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title reveal
-      gsap.fromTo(titleRef.current,
+      // Header Animation
+      gsap.fromTo('.work-header-left > *',
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.work-header',
+            start: 'top bottom-=100',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      )
+
+      // Grid Animation (Vertical Stagger)
+      gsap.fromTo('.project-card',
         { y: 100, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1.2,
+          duration: 1,
+          stagger: 0.1, // Faster stagger for grid
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: titleRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
+            trigger: '.project-list',
+            start: 'top bottom-=50',
+            toggleActions: 'play none none reverse'
+          }
         }
       )
 
-      // Cards stagger animation
-      const cards = cardsRef.current?.querySelectorAll('.work-card')
-      if (cards) {
-        gsap.fromTo(cards,
-          { y: 100, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            stagger: 0.15,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 75%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        )
-      }
+      ScrollTrigger.refresh()
+
     }, sectionRef)
 
     return () => ctx.revert()
@@ -118,102 +121,110 @@ const Work = () => {
     const rect = card.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
+
+    // Spotlight Effect
+    card.style.setProperty('--mouse-x', `${x}px`)
+    card.style.setProperty('--mouse-y', `${y}px`)
+
+    // 3D Tilt Effect
     const centerX = rect.width / 2
     const centerY = rect.height / 2
 
-    // Magnetic intensity based on mouse position from center
-    const rotateX = ((y - centerY) / centerY) * -5
-    const rotateY = ((x - centerX) / centerX) * 5
-
-    // Normalize mouse position for gradient
-    const mouseX = (x / rect.width) * 100
-    const mouseY = (y / rect.height) * 100
-    card.style.setProperty('--mouse-x', `${mouseX}%`)
-    card.style.setProperty('--mouse-y', `${mouseY}%`)
+    const rotateX = ((y - centerY) / centerY) * -5 // Max -5deg to 5deg
+    const rotateY = ((x - centerX) / centerX) * 5  // Max -5deg to 5deg
 
     gsap.to(card, {
       rotateX: rotateX,
       rotateY: rotateY,
-      duration: 0.5,
-      ease: 'power2.out',
       transformPerspective: 1000,
+      scale: 1.02,
+      duration: 0.4,
+      ease: 'power2.out'
     })
-
-    // Move cursor follower (View Case Study button)
-    const viewBtn = card.querySelector('.view-case-study') as HTMLElement
-    if (viewBtn) {
-      gsap.to(viewBtn, {
-        x: x,
-        y: y,
-        duration: 0.1,
-        opacity: 1,
-        scale: 1,
-        ease: 'power1.out'
-      })
-    }
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget
+
     gsap.to(card, {
       rotateX: 0,
       rotateY: 0,
-      y: 0,
-      duration: 0.5,
-      ease: 'power2.out',
+      scale: 1, // Reset scale
+      duration: 0.7,
+      ease: 'elastic.out(1, 0.5)'
     })
-
-    const viewBtn = card.querySelector('.view-case-study') as HTMLElement
-    if (viewBtn) {
-      gsap.to(viewBtn, {
-        opacity: 0,
-        scale: 0.5,
-        duration: 0.3
-      })
-    }
   }
 
   return (
     <section ref={sectionRef} className="work" id="work">
+      {/* Background Elements */}
+      <div className="work-background">
+        <Canvas camera={{ position: [0, 0, 30], fov: 60 }} dpr={[1, 2]}>
+          <ParticleBackground />
+        </Canvas>
+      </div>
+
       <div className="work-container">
-        <h2 ref={titleRef} className="work-title">
-          Selected Work
-        </h2>
-        <div ref={cardsRef} className="work-grid">
-          {projects.map((project) => (
+        {/* Header */}
+        <div className="work-header">
+          <div className="work-header-left">
+            <h2>SELECTED</h2>
+            <span className="outline-text">WORKS</span>
+          </div>
+          <div className="work-header-right">
+            <p>A collection of digital experiences crafted with precision, passion, and code.</p>
+          </div>
+        </div>
+
+        {/* Project List */}
+        <div className="project-list">
+          {projects.map((project, index) => (
             <div
               key={project.id}
-              className="work-card"
+              className="project-card"
+              onClick={() => window.open(project.link, '_blank')}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
-              <div className="view-case-study">View Case Study</div>
-
-              <div className="work-card-content">
-                <div className="work-card-header">
-                  <span className="work-card-category">{project.category}</span>
-                  <span className="work-card-year">{project.year}</span>
-                </div>
-
-                <h3 className="work-card-title">{project.title}</h3>
-                <p className="work-card-description">{project.description}</p>
-
-                <div className="work-card-metrics">
-                  {project.results?.map((res, i) => (
-                    <span key={i} className="metric-tag">{res}</span>
-                  ))}
-                </div>
-
-                <div className="work-card-footer">
-                  <div className="work-card-tags">
-                    {project.tags.map((tag, idx) => (
-                      <span key={idx} className="work-tag">{tag}</span>
-                    ))}
-                  </div>
+              {/* Visual Side */}
+              <div className="project-visual">
+                <div className="project-visual-inner">
+                  {project.image ? (
+                    <div className="project-image" style={{ backgroundImage: `url(${project.image})` }} />
+                  ) : (
+                    <div className="project-image" style={{
+                      background: `linear-gradient(135deg, ${['#1a1a1a', '#222', '#111'][index % 3]} 0%, #000 100%)`
+                    }} />
+                  )}
+                  <div className="project-overlay"></div>
                 </div>
               </div>
 
-              <div className="work-card-background-glow"></div>
+              {/* Info Side */}
+              <div className="project-info">
+                <div className="project-meta">
+                  <span>0{project.id}</span>
+                  <div className="separator"></div>
+                  <span>{project.category}</span>
+                </div>
+
+                <h3 className="project-title">{project.title}</h3>
+                <p className="project-desc">{project.description}</p>
+
+                <div className="project-footer">
+                  <div className="project-tags">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="tech-tag">{tag}</span>
+                    ))}
+                  </div>
+
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="mosaic-glass-btn" onClick={(e) => e.stopPropagation()} data-cursor="magnetic">
+                    <span className="btn-text">Visit</span>
+                    <span className="btn-icon">↗</span>
+                    <div className="mosaic-shimmer"></div>
+                  </a>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -223,4 +234,3 @@ const Work = () => {
 }
 
 export default Work
-

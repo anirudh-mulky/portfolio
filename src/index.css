@@ -7,20 +7,57 @@
 }
 
 :root {
-  --bg-primary: #050505;
-  --bg-secondary: #0a0a0a;
-  --bg-tertiary: #111111;
+  /* --- Premium Dark Base --- */
+  --bg-primary: #050507;
+  /* Deepest Midnight */
+  --bg-secondary: #0a0a0f;
+  /* Slightly lighter surface */
+  --bg-tertiary: #111116;
+  /* Card backgrounds */
+
+  /* --- Typography --- */
   --text-primary: #ffffff;
-  --text-secondary: #a3a3a3;
-  --accent: #eb5e28;
-  --accent-glow: rgba(235, 94, 40, 0.4);
+  --text-secondary: #a1a1aa;
+  /* Cool silver */
+
+  /* --- Palette (Hero Inspired) --- */
+  --accent-blue: #3b82f6;
+  /* Electric Blue */
+  --accent-purple: #8b5cf6;
+  /* Neon Purple */
+  --accent-cyan: #06b6d4;
+  /* Cyber Cyan */
+  --accent-glow-blue: rgba(59, 130, 246, 0.5);
+  --accent-glow-purple: rgba(139, 92, 246, 0.5);
+  --accent-glow-cyan: rgba(6, 182, 212, 0.5);
+
+  /* --- Glassmorphism --- */
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-bg: rgba(255, 255, 255, 0.03);
+
+  /* Legacy/Base Accent default */
+  --accent: var(--accent-blue);
+  --accent-glow: var(--accent-glow-blue);
+
+  /* --- Global Layout --- */
+  --section-spacing: 5rem;
+  /* Consistent large whitespace */
 }
 
-html {
-  scroll-behavior: smooth;
+/* --- Stacking Experiment --- */
+.stacked-section {
+  /* Position and top are handled by StackedSection.tsx component logic */
+  z-index: 1;
+  /* Base z-index, DOM order handles the rest */
+  min-height: 100vh;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  /* Shadow on top edge to separate from underlying card */
+  /* Ensure background is set on the component itself, but just in case: */
+  background: var(--bg-primary);
+  will-change: transform;
 }
+
+
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -31,11 +68,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  body {
-    cursor: none;
-  }
-}
+
 
 #root {
   width: 100%;

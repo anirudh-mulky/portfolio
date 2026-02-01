@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
 import { gsap } from 'gsap'
 
 const CustomCursor = () => {
@@ -21,19 +22,20 @@ const CustomCursor = () => {
     if (!cursor || !follower) return
 
     // Initialize cursor position
-    gsap.set(cursor, { x: window.innerWidth / 2, y: window.innerHeight / 2, scale: 0, opacity: 0 })
-    gsap.set(follower, { x: window.innerWidth / 2, y: window.innerHeight / 2, scale: 0, opacity: 0 })
+    // Initialize cursor position
+    gsap.set(cursor, { x: window.innerWidth / 2 + window.scrollX, y: window.innerHeight / 2 + window.scrollY, scale: 0, opacity: 0 })
+    gsap.set(follower, { x: window.innerWidth / 2 + window.scrollX, y: window.innerHeight / 2 + window.scrollY, scale: 0, opacity: 0 })
 
     const updateCursor = (e: MouseEvent) => {
       gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
+        x: e.pageX,
+        y: e.pageY,
         duration: 0,
       })
 
       gsap.to(follower, {
-        x: e.clientX,
-        y: e.clientY,
+        x: e.pageX,
+        y: e.pageY,
         duration: 0.3,
         ease: 'power2.out',
       })
@@ -43,8 +45,6 @@ const CustomCursor = () => {
       updateCursor(e)
     }
 
-
-
     // Magnetic effect for links and buttons using event delegation
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
@@ -52,8 +52,8 @@ const CustomCursor = () => {
 
       if (link) {
         const rect = link.getBoundingClientRect()
-        const centerX = rect.left + rect.width / 2
-        const centerY = rect.top + rect.height / 2
+        const centerX = rect.left + rect.width / 2 + window.scrollX
+        const centerY = rect.top + rect.height / 2 + window.scrollY
 
         gsap.to(cursor, {
           scale: 1.5,
@@ -119,13 +119,15 @@ const CustomCursor = () => {
     }
   }, [])
 
-  return (
+  return ReactDOM.createPortal(
     <>
       <div
         ref={cursorRef}
         className="custom-cursor"
         style={{
-          position: 'fixed',
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '8px',
           height: '8px',
           borderRadius: '50%',
@@ -140,7 +142,9 @@ const CustomCursor = () => {
         ref={followerRef}
         className="cursor-follower"
         style={{
-          position: 'fixed',
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '40px',
           height: '40px',
           borderRadius: '50%',
@@ -150,7 +154,8 @@ const CustomCursor = () => {
           transform: 'translate(-50%, -50%)',
         }}
       />
-    </>
+    </>,
+    document.body
   )
 }
 

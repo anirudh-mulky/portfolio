@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './Services.css'
+import SkillsMarquee from './SkillsMarquee'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -80,6 +81,11 @@ const Services = () => {
         <h2 ref={titleRef} className="services-title">
           Our Expertise
         </h2>
+
+        <div style={{ marginBottom: '4rem', width: '100%' }}>
+          <SkillsMarquee />
+        </div>
+
         <div ref={itemsRef} className="services-list">
           {services.map((service, index) => (
             <div
@@ -104,11 +110,15 @@ const Services = () => {
             </div>
           ))}
         </div>
+
+
+
       </div>
-    </section>
+    </section >
   )
 }
 
 export default Services
+
 
 

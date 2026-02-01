@@ -11,10 +11,13 @@
 
 .navbar.scrolled {
     padding: 1rem 2rem;
-    background: rgba(5, 5, 5, 0.6);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--glass-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(5, 5, 7, 0.7);
+    /* Slightly darker/more opaque base */
+    backdrop-filter: blur(16px);
+    /* Stronger blur */
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-container {
@@ -37,11 +40,20 @@
 }
 
 .logo-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--accent-glow);
+    transition: box-shadow 0.3s ease;
+}
+
+.logo-dot.glow-cyan {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px var(--accent-glow-cyan);
+}
+
+.logo-dot.glow-purple {
+    background: var(--accent-purple);
+    box-shadow: 0 0 10px var(--accent-glow-purple);
 }
 
 .navbar-links {

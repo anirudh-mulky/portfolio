@@ -42,26 +42,20 @@ const Hero = () => {
   }, [])
 
   return (
-    <section className="hero-webgl">
+    <section ref={contentRef} className="hero-webgl">
       {/* 1. WebGL Background Layer */}
       <div className="canvas-container">
-        <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 2]}>
+        <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 1.5]}>
           <FluidBackground />
         </Canvas>
       </div>
 
       {/* 2. HTML Content Layer - Editorial Design */}
-      <div ref={contentRef} className="hero-content-layer">
+      <div className="hero-content-layer">
 
         {/* Top Meta Info */}
         <div className="hero-header">
-          <div className="hero-meta">
-            <span className="meta-label">PORTFOLIO &copy; 2026</span>
-            <span className="active-dot"></span>
-          </div>
-          <div className="hero-meta right">
-            <span className="meta-label">BASED IN SAN FRANCISCO</span>
-          </div>
+          {/* Content removed by user request */}
         </div>
 
         {/* Main Fractured Headline */}

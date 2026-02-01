@@ -2,8 +2,8 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  padding: 8rem 2rem;
-  background: #000;
+  padding: var(--section-spacing) 2rem;
+  background: var(--bg-primary);
   overflow: hidden;
   display: flex;
   align-items: center;

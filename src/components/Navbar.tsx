@@ -58,7 +58,9 @@ const Navbar = () => {
         <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
             <div className="navbar-container">
                 <a href="#hero" className="navbar-logo" onClick={(e) => handleLinkClick(e, '#hero')}>
-                    Portfolio<span className="logo-dot"></span>
+                    <span className="logo-dot glow-cyan"></span>
+                    TheWebThread
+                    <span className="logo-dot glow-purple"></span>
                 </a>
 
                 <button

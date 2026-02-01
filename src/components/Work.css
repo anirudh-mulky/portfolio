@@ -1,323 +1,425 @@
 .work {
   position: relative;
   width: 100%;
-  padding: 8rem 2rem;
-  background: var(--bg-tertiary);
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: var(--section-spacing) 2rem;
   overflow: hidden;
+  /* Prevent overflow from animations */
+  z-index: 2;
 }
 
-.work::before {
-  content: '';
+/* --- Background Texture --- */
+.work-background {
   position: absolute;
-  top: -20%;
-  left: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(80px);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* pointer-events: none; Remove this if we want R3F to potentially catch events, but z-index -1 makes it hard.
+     However, keeping it static/ambient is fine. */
   z-index: 0;
+  /* Move to 0, content to 2 */
 }
 
-.work::after {
-  content: '';
+.pulsating-glow {
   position: absolute;
-  bottom: -20%;
+  top: 20%;
   right: -10%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
-  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
   filter: blur(80px);
-  z-index: 0;
+  animation: pulseGlow 8s ease-in-out infinite alternate;
 }
 
+/* --- Container & Grid --- */
 .work-container {
   max-width: 1400px;
   margin: 0 auto;
-  width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-.work-title {
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  margin-bottom: 6rem;
-  line-height: 1.1;
-  text-align: left;
-  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.5));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding-left: 1rem;
-}
-
-.work-grid {
+.project-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  /* 3 Columns */
   gap: 3rem;
-  padding: 1rem;
-}
-
-.work-card {
-  position: relative;
-  min-height: 500px;
-  border-radius: 24px;
-  background: rgba(20, 20, 20, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  cursor: none;
-  /* Custom cursor handling */
-}
-
-/* Creative Gradient Overlays based on ID or Category (Simulated with nth-child) */
-/* E-commerce */
-.work-card:nth-child(1)::before,
-.work-card:nth-child(4)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
+  /* Slightly tighter gap for dense grid */
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 80% 20%, rgba(244, 63, 94, 0.15), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1;
 }
 
-/* Portfolio/Creative */
-.work-card:nth-child(2)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1;
-}
-
-/* Product/SaaS */
-.work-card:nth-child(3)::before,
-.work-card:nth-child(5)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1;
-}
-
-/* Entertainment */
-.work-card:nth-child(6)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.15), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1;
-}
-
-.work-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
-}
-
-.work-card:hover::before {
-  opacity: 1;
-}
-
-.work-card-content {
-  position: relative;
-  z-index: 10;
-  height: 100%;
-  padding: 3.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.work-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 1.5rem;
-}
-
-.work-card-category {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.5rem 1rem;
-  border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.work-card-year {
-  font-family: monospace;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.work-card-title {
-  font-size: 2.75rem;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.25rem;
-  line-height: 1.1;
-  color: #fff;
-  max-width: 90%;
-}
-
-.work-card-description {
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: auto;
-  font-weight: 300;
-  max-width: 85%;
-}
-
-.work-card-metrics {
-  display: flex;
-  gap: 2rem;
-  margin: 3rem 0;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.metric-tag {
-  font-family: monospace;
-  font-size: 0.9rem;
-  color: #fff;
-  opacity: 0.8;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.metric-tag::before {
-  content: '';
-  display: block;
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent);
-}
-
-.work-card-footer {
+/* --- Header Section (Editorial) --- */
+.work-header {
+  margin-bottom: 6rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 2rem;
+  position: relative;
+  /* Reset position from horiz scroll */
+  top: auto;
+  left: auto;
+  pointer-events: auto;
 }
 
-.work-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.work-header-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--text-primary);
 }
 
-.work-tag {
-  font-size: 0.85rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
+.work-header-left .outline-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  color: transparent;
+  display: block;
+  font-size: 5rem;
+  margin-top: -1rem;
 }
 
-.work-card:hover .work-tag {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-/* Custom "View Case Study" Button style handled in TSX via cursor follower, 
-   but we can add a stationary hint if needed. 
-   Currently hiding the default one to use the custom cursor effect efficiently */
-.view-case-study {
-  position: fixed;
-  /* Changed to fixed to follow mouse properly relative to viewport or absolute to card */
-  /* Actually, better to keep it absolute to card as implemented in TSX logic usually relies on it */
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #fff;
-  color: #000;
-  padding: 1rem 1.5rem;
-  border-radius: 30px;
-  font-weight: 500;
+.work-header-right {
+  text-align: right;
+  font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(0.5);
-  z-index: 100;
-  white-space: nowrap;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  color: var(--text-secondary);
+  max-width: 300px;
 }
 
-.work-card-background-glow {
+/* --- Project Card (Grid Version) --- */
+.project-card {
+  position: relative;
+  width: 100%;
+  /* No fixed height, let content dictate or min-height */
+  min-height: 500px;
+  display: flex;
+  /* Changed to flex column for cleaner grid card */
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  /* Transition only background/box-shadow/border - NOT transform as GSAP handles that */
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Hover Effect: Border Glow & Spotlight */
+.project-card::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%);
-  opacity: 0;
-  transition: opacity 0.5s;
-  z-index: 2;
-  pointer-events: none;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
 }
 
-.work-card:hover .work-card-background-glow {
+/* Dynamic Spotlight */
+.project-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.06),
+      transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.project-card:hover::after {
   opacity: 1;
 }
 
-@media (max-width: 968px) {
+.project-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.project-card:hover::before {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+/* --- Project Visual --- */
+.project-visual {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  /* Consistent aspect ratio */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.project-visual-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover .project-visual-inner {
+  transform: scale(1.05);
+}
+
+.project-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.project-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease;
+}
+
+.project-card:hover .project-overlay {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* --- Project Details --- */
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.project-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.separator {
+  width: 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.project-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.project-card:hover .project-title {
+  color: var(--accent-blue);
+}
+
+.project-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tech-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.project-card:hover .tech-tag {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.project-footer {
+  margin-top: auto;
+  /* Push to bottom if flex col */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* Align vertically center */
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+/* --- Mosaic Glass Button --- */
+.mosaic-glass-btn {
+  /* position: relative;  Already in rule below*/
+  flex-shrink: 0;
+  /* Don't shrink */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1.75rem;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  isolation: isolate;
+}
+
+/* Mosaic Texture Effect */
+.mosaic-glass-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 20%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.mosaic-glass-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba(var(--accent-rgb, 59, 130, 246), 0.2);
+}
+
+.btn-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  z-index: 1;
+}
+
+.btn-icon {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--accent-blue);
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.mosaic-glass-btn:hover .btn-icon {
+  transform: translate(3px, -3px);
+  color: #fff;
+}
+
+/* Shimmer Animation */
+.mosaic-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+  z-index: 0;
+}
+
+.mosaic-glass-btn:hover .mosaic-shimmer {
+  animation: shimmer 0.8s forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 200%;
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+
+  .work-header-left h2,
+  .work-header-left .outline-text {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
   .work {
     padding: 6rem 1.5rem;
   }
 
-  .work-grid {
+  .project-list {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    /* Stack on mobile */
+    gap: 3rem;
+    padding-bottom: 2rem;
   }
 
-  .work-card {
-    min-height: auto;
-    padding: 2.5rem;
-  }
-
-  .work-card-title {
-    font-size: 2rem;
-  }
-
-  .work-card-metrics {
+  .work-header {
     flex-direction: column;
-    gap: 1rem;
-    margin: 2rem 0;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .work-header-left h2,
+  .work-header-left .outline-text {
+    font-size: 3rem;
+  }
+
+  .project-card {
+    min-height: auto;
   }
 }

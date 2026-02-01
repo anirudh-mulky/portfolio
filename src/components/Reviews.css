@@ -1,7 +1,7 @@
 .reviews {
   position: relative;
   width: 100%;
-  padding: 10rem 0;
+  padding: var(--section-spacing) 0;
   /* Full bleed padding */
   background: var(--bg-primary);
   overflow: hidden;
