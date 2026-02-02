@@ -4,11 +4,11 @@ import { Color, Vector2, ShaderMaterial } from 'three'
 import * as THREE from 'three'
 
 const FluidBackground = () => {
-    const meshRef = useRef<THREE.Mesh>(null)
-    const { viewport } = useThree()
+  const meshRef = useRef<THREE.Mesh>(null)
+  const { viewport } = useThree()
 
-    // --- SHADERS ---
-    const vertexShader = `
+  // --- SHADERS ---
+  const vertexShader = `
     varying vec2 vUv;
     void main() {
       vUv = uv;
@@ -16,7 +16,7 @@ const FluidBackground = () => {
     }
   `
 
-    const fragmentShader = `
+  const fragmentShader = `
     uniform float uTime;
     uniform vec3 uColor;
     uniform vec2 uMouse;
@@ -130,43 +130,43 @@ const FluidBackground = () => {
     }
   `
 
-    const uniforms = useMemo(
-        () => ({
-            uTime: { value: 0 },
-            uColor: { value: new Color('#000000') },
-            uMouse: { value: new Vector2(0, 0) },
-        }),
-        []
-    )
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uColor: { value: new Color('#000000') },
+      uMouse: { value: new Vector2(0, 0) },
+    }),
+    []
+  )
 
-    useFrame(({ clock, pointer }) => {
-        if (meshRef.current) {
-            // Update time
-            (meshRef.current.material as ShaderMaterial).uniforms.uTime.value = clock.getElapsedTime();
+  useFrame(({ clock, pointer }) => {
+    if (meshRef.current) {
+      // Update time
+      (meshRef.current.material as ShaderMaterial).uniforms.uTime.value = clock.getElapsedTime();
 
-            // Smoothly interpolate mouse uniform
-            const targetX = pointer.x;
-            const targetY = pointer.y;
+      // Smoothly interpolate mouse uniform
+      const targetX = pointer.x;
+      const targetY = pointer.y;
 
-            // Get current values
-            const currentMouse = (meshRef.current.material as ShaderMaterial).uniforms.uMouse.value;
+      // Get current values
+      const currentMouse = (meshRef.current.material as ShaderMaterial).uniforms.uMouse.value;
 
-            // Lerp for smoothness
-            currentMouse.x += (targetX - currentMouse.x) * 0.05;
-            currentMouse.y += (targetY - currentMouse.y) * 0.05;
-        }
-    })
+      // Lerp for smoothness
+      currentMouse.x += (targetX - currentMouse.x) * 0.05;
+      currentMouse.y += (targetY - currentMouse.y) * 0.05;
+    }
+  })
 
-    return (
-        <mesh ref={meshRef} scale={[viewport.width, viewport.height, 1]}>
-            <planeGeometry args={[1, 1, 32, 32]} />
-            <shaderMaterial
-                vertexShader={vertexShader}
-                fragmentShader={fragmentShader}
-                uniforms={uniforms}
-            />
-        </mesh>
-    )
+  return (
+    <mesh ref={meshRef} scale={[viewport.width, viewport.height, 1]}>
+      <planeGeometry args={[1, 1, 32, 32]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms}
+      />
+    </mesh>
+  )
 }
 
 export default FluidBackground

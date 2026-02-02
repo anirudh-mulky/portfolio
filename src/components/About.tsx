@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useRef, useEffect } from 'react'
+import { Canvas } from '@react-three/fiber'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+import AlchemyParticles from './AlchemyParticles'
 import './About.css'
 
 const About = () => {
@@ -79,6 +81,17 @@ const About = () => {
   return (
     <section ref={sectionRef} className="about-creative" id="about">
       <div className="creative-background">
+        {/* Golden Stardust Particles */}
+        <div className="alchemy-canvas-container">
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 75 }}
+            dpr={[1, 1.5]}
+            gl={{ alpha: true, antialias: true }}
+          >
+            <AlchemyParticles />
+          </Canvas>
+        </div>
+
         <div className="gradient-orb orb-1"></div>
         <div className="gradient-orb orb-2"></div>
         <div className="gradient-orb orb-3"></div>
@@ -87,9 +100,12 @@ const About = () => {
       <div className="about-container-creative">
         <div className="about-header-creative">
           <span className="subtitle-creative">The Philosophy</span>
-          <h2 ref={titleRef} className="title-creative">
-            {splitText("Digital Alchemy")}
-          </h2>
+          {/* Wrapped in a no-wrap container to enforce single line */}
+          <div className="title-wrapper-nowrap">
+            <h2 ref={titleRef} className="title-creative">
+              {splitText("Digital Alchemy")}
+            </h2>
+          </div>
           <p className="manifesto-text">
             We don't just build websites. We transmute <span className="highlight-serif">ideas</span> into <span className="highlight-serif">reality</span>.
             Blurring the line between functional interface and digital art.

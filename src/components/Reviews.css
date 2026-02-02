@@ -178,7 +178,7 @@
 
 @media (max-width: 968px) {
   .reviews {
-    padding: 6rem 0;
+    padding: 4rem 0;
   }
 
   .reviews-title {
@@ -186,8 +186,10 @@
   }
 
   .review-card {
-    flex: 0 0 320px;
+    flex: 0 0 85vw;
     padding: 2rem;
+    max-width: 400px;
+    /* Cap it */
   }
 
   .review-quote-icon {
@@ -196,13 +198,17 @@
 
   @keyframes scroll {
     0% {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
+      /* Force HW acceleration */
     }
 
     100% {
-      transform: translateX(-100%);
+      transform: translate3d(-50%, 0, 0);
     }
+  }
 
-    /* Need to adjust if layout wraps mainly for mobile or keep duplicate */
+  /* Slow down for better legibility on small screens */
+  .reviews-track {
+    animation-duration: 50s;
   }
 }

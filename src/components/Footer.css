@@ -93,6 +93,20 @@
   .footer-social {
     flex-direction: row;
     gap: 1.5rem;
+    flex-wrap: wrap;
   }
 }
 
+@media (max-width: 480px) {
+  .footer {
+    padding: 3rem 1.5rem 2rem;
+  }
+
+  .footer-title {
+    font-size: 1.5rem;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+}

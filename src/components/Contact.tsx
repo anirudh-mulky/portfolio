@@ -14,17 +14,19 @@ const Contact = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Parallax Background
-      gsap.to(bgRef.current, {
-        yPercent: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
+      // Parallax Background - Desktop Only
+      if (window.innerWidth > 768) {
+        gsap.to(bgRef.current, {
+          yPercent: 20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
 
       // Content Reveal
       gsap.from(contentRef.current, {

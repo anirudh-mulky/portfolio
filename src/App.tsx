@@ -1,18 +1,19 @@
-import { useEffect } from 'react'
+import { useEffect, Suspense, lazy } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import About from './components/About'
-import Work from './components/Work'
-import Services from './components/Services'
-
-import Reviews from './components/Reviews'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
 import StackedSection from './components/StackedSection'
-import GlobalNoise from './components/GlobalNoise'
+
+// Lazy load heavy sections below the fold
+const About = lazy(() => import('./components/About'))
+const Work = lazy(() => import('./components/Work'))
+const Services = lazy(() => import('./components/Services'))
+const Reviews = lazy(() => import('./components/Reviews'))
+const Contact = lazy(() => import('./components/Contact'))
+const Footer = lazy(() => import('./components/Footer'))
+
 
 import './App.css'
 
@@ -55,16 +56,17 @@ function App() {
 
   return (
     <div className="app" style={{ minHeight: '100vh', background: '#0a0a0a' }}>
-      <GlobalNoise />
       <Navbar />
       <StackedSection id="hero"><Hero /></StackedSection>
-      <StackedSection id="about"><About /></StackedSection>
-      <StackedSection id="work"><Work /></StackedSection>
-      <StackedSection id="services"><Services /></StackedSection>
+      <Suspense fallback={<div style={{ height: '100vh' }}></div>}>
+        <StackedSection id="about"><About /></StackedSection>
+        <StackedSection id="work"><Work /></StackedSection>
+        <StackedSection id="services"><Services /></StackedSection>
 
-      <StackedSection id="reviews"><Reviews /></StackedSection>
-      <StackedSection id="contact"><Contact /></StackedSection>
-      <Footer />
+        <StackedSection id="reviews"><Reviews /></StackedSection>
+        <StackedSection id="contact"><Contact /></StackedSection>
+        <Footer />
+      </Suspense>
     </div>
   )
 }

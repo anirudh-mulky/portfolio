@@ -53,13 +53,17 @@ const Particles = () => {
             dummy.rotation.set(s * 5, s * 5, s * 5)
             dummy.updateMatrix()
 
-            mesh.current.setMatrixAt(i, dummy.matrix)
+            if (mesh.current) {
+                mesh.current.setMatrixAt(i, dummy.matrix)
+            }
         })
-        mesh.current.instanceMatrix.needsUpdate = true
+        if (mesh.current) {
+            mesh.current.instanceMatrix.needsUpdate = true
+        }
     })
 
     return (
-        <instancedMesh ref={mesh} args={[null, null, count]}>
+        <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
             <dodecahedronGeometry args={[0.2, 0]} />
             <meshPhongMaterial color="#3b82f6" transparent opacity={0.6} />
         </instancedMesh>

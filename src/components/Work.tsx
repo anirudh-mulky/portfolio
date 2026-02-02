@@ -159,9 +159,14 @@ const Work = () => {
     <section ref={sectionRef} className="work" id="work">
       {/* Background Elements */}
       <div className="work-background">
-        <Canvas camera={{ position: [0, 0, 30], fov: 60 }} dpr={[1, 2]}>
+        <Canvas camera={{ position: [0, 0, 30], fov: 60 }} dpr={[1, 1.5]}>
           <ParticleBackground />
         </Canvas>
+
+        {/* Creative Floating Orbs */}
+        <div className="work-orb orb-blue"></div>
+        <div className="work-orb orb-purple"></div>
+        <div className="work-orb orb-cyan"></div>
       </div>
 
       <div className="work-container">
@@ -174,6 +179,14 @@ const Work = () => {
           <div className="work-header-right">
             <p>A collection of digital experiences crafted with precision, passion, and code.</p>
           </div>
+        </div>
+
+        {/* Mobile Swipe Indicator */}
+        <div className="swipe-indicator">
+          <span>&larr; Swipe to Explore &rarr;</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </div>
 
         {/* Project List */}

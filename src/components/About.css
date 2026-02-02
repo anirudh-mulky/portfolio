@@ -3,7 +3,8 @@
   width: 100%;
   min-height: 100vh;
   padding: var(--section-spacing) 2rem;
-  background: var(--bg-primary);
+  background: #050505;
+  /* Deep black for particles to pop */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -86,28 +87,62 @@
 
 .about-header-creative {
   position: relative;
+  z-index: 10;
+  /* Ensure text is above 3D model */
 }
 
-.subtitle-creative {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3em;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 2rem;
-  display: block;
-  font-weight: 500;
+/* Force single line text */
+.title-wrapper-nowrap {
+  white-space: nowrap;
+  overflow: visible;
+  /* Allow transforms/effects to spill out */
+  width: max-content;
 }
 
 .title-creative {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-size: clamp(3.5rem, 7vw, 6.5rem);
+  /* Slightly smaller max to fit */
   font-weight: 400;
-  line-height: 0.95;
+  line-height: 1.1;
   color: #fff;
   margin-bottom: 3rem;
-  overflow: hidden;
-  /* For char reveal */
+  overflow: visible;
+}
+
+/* Magnetic/Magic Hover Effect for Text */
+.title-creative .char {
+  display: inline-block;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+  cursor: default;
+}
+
+.title-creative:hover .char {
+  /* Base state when hovering container */
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.title-creative .char:hover {
+  color: #fbbf24;
+  /* Gold */
+  transform: translateY(-10px) scale(1.1) !important;
+  /* Override GSAP if needed, but GSAP usually handles inline styles */
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+  z-index: 10;
+}
+
+/* Alchemy Canvas Container */
+.alchemy-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: auto;
+  /* Allow mouse interaction with shader */
+  opacity: 1;
+  /* Full opacity, shader handles transparency */
 }
 
 .title-creative .char {
@@ -262,6 +297,47 @@
   }
 
   .title-creative {
-    font-size: 4rem;
+    font-size: 13vw;
+    /* Responsive scaling for very long words */
+  }
+
+  .manifesto-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-creative {
+    padding: 4rem 1rem;
+    min-height: auto;
+    /* Don't force full height */
+  }
+
+  .about-container-creative {
+    gap: 2rem;
+  }
+
+  .title-wrapper-nowrap {
+    white-space: normal;
+    text-align: left;
+    width: 100%;
+  }
+
+  .title-creative {
+    font-size: 3rem;
+    /* Static readable size */
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .manifesto-text {
+    font-size: 1.1rem;
+    max-width: 100%;
+  }
+
+  /* Simplify cards orbs */
+  .gradient-orb {
+    opacity: 0.3;
+    /* Dim background */
   }
 }

@@ -165,6 +165,8 @@
 
   .big-text-row {
     font-size: 15vw;
+    /* Ensure it doesn't get too small or too big */
+    font-size: clamp(2.5rem, 12vw, 4.5rem);
   }
 
   .serif-italic {
